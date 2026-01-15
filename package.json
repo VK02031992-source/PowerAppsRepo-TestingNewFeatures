@@ -1,0 +1,19 @@
+{
+  "name": "powerappsrepo-testingnewfeatures",
+  "version": "1.0.0",
+  "description": "This is the repository to test the new features of PowerApps",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "mcp-server": "node mcp-server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.25.2",
+    "cors": "^2.8.5",
+    "express": "^5.2.1"
+  }
+}

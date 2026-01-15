@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PowerApps - Task Manager</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚡ PowerApps Task Manager</h1>
+            <p class="subtitle">Connected with MCP Server</p>
+        </header>
+
+        <div class="connection-status">
+            <div class="status-indicator" id="statusIndicator"></div>
+            <span id="connectionStatus">Connecting to MCP Server...</span>
+        </div>
+
+        <main>
+            <section class="card">
+                <h2>👥 Users</h2>
+                <button class="btn btn-primary" onclick="loadUsers()">Refresh Users</button>
+                <div id="usersList" class="data-display">
+                    Click "Refresh Users" to load data from MCP server
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>📋 Tasks</h2>
+                <button class="btn btn-primary" onclick="loadTasks()">Refresh Tasks</button>
+                <div id="tasksList" class="data-display">
+                    Click "Refresh Tasks" to load data from MCP server
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>➕ Create New Task</h2>
+                <form id="createTaskForm" onsubmit="createTask(event)">
+                    <div class="form-group">
+                        <label for="taskTitle">Task Title:</label>
+                        <input type="text" id="taskTitle" name="taskTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskStatus">Status:</label>
+                        <select id="taskStatus" name="taskStatus" required>
+                            <option value="Pending">Pending</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="assignedTo">Assigned To (User ID):</label>
+                        <input type="number" id="assignedTo" name="assignedTo" min="1" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">Create Task</button>
+                </form>
+            </section>
+
+            <section class="card">
+                <h2>🔄 Update Task Status</h2>
+                <form id="updateTaskForm" onsubmit="updateTaskStatus(event)">
+                    <div class="form-group">
+                        <label for="updateTaskId">Task ID:</label>
+                        <input type="number" id="updateTaskId" name="updateTaskId" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="updateStatus">New Status:</label>
+                        <select id="updateStatus" name="updateStatus" required>
+                            <option value="Pending">Pending</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-warning">Update Status</button>
+                </form>
+            </section>
+
+            <section class="card">
+                <h2>📊 MCP Server Info</h2>
+                <div class="info-box">
+                    <p><strong>Server Name:</strong> powerapps-mcp-server</p>
+                    <p><strong>Version:</strong> 1.0.0</p>
+                    <p><strong>Protocol:</strong> Model Context Protocol (MCP)</p>
+                    <p><strong>Available Tools:</strong></p>
+                    <ul>
+                        <li>get_users - Retrieve all users</li>
+                        <li>get_tasks - Retrieve all tasks</li>
+                        <li>create_task - Create a new task</li>
+                        <li>update_task_status - Update task status</li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>PowerApps MCP Integration Demo - Testing New Features</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
