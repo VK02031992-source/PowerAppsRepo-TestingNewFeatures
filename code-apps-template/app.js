@@ -297,8 +297,8 @@ class UIController {
                 <td>${this.escapeHtml(record.role)}</td>
                 <td><span class="status-badge ${statusClass}">${record.status}</span></td>
                 <td class="action-buttons">
-                    <button class="btn btn-warning btn-small" onclick="app.handleEdit(${record.id})">Edit</button>
-                    <button class="btn btn-danger btn-small" onclick="app.handleDelete(${record.id})">Delete</button>
+                    <button class="btn btn-warning btn-small" data-action="edit" data-id="${record.id}">Edit</button>
+                    <button class="btn btn-danger btn-small" data-action="delete" data-id="${record.id}">Delete</button>
                 </td>
             `;
 
@@ -311,6 +311,18 @@ class UIController {
                     row.classList.remove('selected');
                     this.selectAllCheckbox.checked = false;
                 }
+            });
+
+            // Add event listeners for action buttons
+            const editBtn = row.querySelector('[data-action="edit"]');
+            const deleteBtn = row.querySelector('[data-action="delete"]');
+            
+            editBtn.addEventListener('click', () => {
+                this.handleEdit(record.id);
+            });
+            
+            deleteBtn.addEventListener('click', () => {
+                this.handleDelete(record.id);
             });
 
             this.gridBody.appendChild(row);
