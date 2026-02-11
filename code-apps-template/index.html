@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Apps Template - Editable Grid</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Code Apps Template - Editable Data Grid</h1>
+            <p class="subtitle">Create, Read, Update, and Delete operations</p>
+        </header>
+
+        <main>
+            <!-- Add New Record Form -->
+            <section class="form-section">
+                <h2>Add New Record</h2>
+                <form id="addForm">
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="role">Role:</label>
+                        <input type="text" id="role" name="role" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Status:</label>
+                        <select id="status" name="status" required>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Record</button>
+                    <button type="button" id="cancelEdit" class="btn btn-secondary" style="display: none;">Cancel Edit</button>
+                </form>
+            </section>
+
+            <!-- Search and Filter -->
+            <section class="search-section">
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Search records...">
+                    <button id="searchBtn" class="btn btn-primary">Search</button>
+                    <button id="clearSearch" class="btn btn-secondary">Clear</button>
+                </div>
+            </section>
+
+            <!-- Data Grid -->
+            <section class="grid-section">
+                <h2>Data Grid</h2>
+                <div class="grid-controls">
+                    <button id="deleteSelected" class="btn btn-danger">Delete Selected</button>
+                    <span id="recordCount" class="record-count">Total Records: 0</span>
+                </div>
+                <div class="table-responsive">
+                    <table id="dataGrid">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="selectAll"></th>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gridBody">
+                            <!-- Data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="noData" class="no-data" style="display: none;">
+                    No records found. Add a new record to get started.
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 Code Apps Template | Data stored locally in browser</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
