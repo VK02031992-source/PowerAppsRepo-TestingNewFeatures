@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PowerApps Security Mockups (New Requirements)</title>
+    <style>
+        /* Modern LAM Research Theme */
+        :root {
+            /* Base Palette */
+            --lam-slate: rgba(106, 120, 133, 1);
+            --lam-midnight: rgba(36, 36, 55, 1);
+            --lam-sand: rgba(230, 227, 220, 1);
+            --lam-mint: rgba(108, 227, 198, 1);
+            --lam-dark-green: rgba(32, 167, 133, 1);
+            
+            --lam-black: rgba(0, 0, 0, 1);
+            --lam-white: rgba(255, 255, 255, 1);
+            
+            /* Functional Colors */
+            --primary-color: var(--lam-midnight);
+            --primary-hover: var(--lam-slate);
+            --neutral-light: var(--lam-sand);
+            --neutral-lighter: #f3f2f1; /* Keep for general background variance if needed, or map to sand */
+            --text-primary: var(--lam-midnight);
+            --text-secondary: var(--lam-slate);
+            --border-color: var(--lam-slate);
+            --focus-border: var(--lam-midnight);
+            --header-bg: var(--lam-midnight);
+            --header-text: var(--lam-white);
+        }
+
+        body {
+            font-family: 'Arial', sans-serif; /* LamTypography.L3Font */
+            margin: 0;
+            padding: 0;
+            background-color: var(--lam-white);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            color: var(--text-primary);
+        }
+
+        /* Layout */
+        .app-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Top Header */
+        .top-header {
+            background-color: var(--primary-color); 
+            color: white;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            font-weight: 700;
+            font-size: 16px; /* L1Size */
+            box-shadow: 0 0 4px rgba(0,0,0,0.2);
+            z-index: 10;
+            font-family: 'Georgia', serif;
+        }
+
+        /* Sidebar Navigation */
+        .nav-sidebar {
+            width: 250px;
+            background-color: white;
+            border-right: 1px solid #edebe9;
+            display: flex;
+            flex-direction: column;
+            padding-top: 10px;
+            box-shadow: 1px 0 2px rgba(0,0,0,0.05);
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            color: var(--text-primary);
+            font-size: 10px; /* L2Size */
+            border-left: 3px solid transparent;
+            transition: all 0.1s;
+            margin: 2px 0;
+            font-family: 'Arial', sans-serif;
+            font-weight: 700;
+        }
+
+        .nav-item:hover {
+            background-color: var(--neutral-light);
+        }
+
+        .nav-item.active {
+            background-color: #eff6fc;
+            border-left-color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            padding: 24px 32px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* Screens */
+        .screen {
+            display: none; /* Hidden by default */
+            /* Removed card-like wrapper for screen, making it canvas-like */
+            background: transparent;
+            min-height: 100%;
+            box-sizing: border-box;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Typography & Controls */
+        h2 { margin-top: 0; color: var(--text-primary); font-family: 'Georgia', serif; font-weight: 700; font-size: 16px; margin-bottom: 24px;}
+        h3 { color: var(--text-primary); font-family: 'Georgia', serif; font-size: 14px; margin-bottom: 12px; font-weight: 700; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; margin-bottom: 6px; font-weight: 700; font-size: 10px; color: var(--text-primary); font-family: 'Arial', sans-serif; }
+        
+        select, input[type="text"] {
+            width: 100%;
+            max-width: 400px;
+            padding: 0 8px; /* Height determined by line-height/height */
+            height: 32px;
+            border: 1px solid var(--border-color); /* Rest style */
+            border-radius: 0;
+            font-family: 'Arial', sans-serif;
+            font-size: 10px; /* L3Size */
+            background-color: white;
+            transition: all 0.1s;
+        }
+
+        input[type="checkbox"], input[type="radio"] {
+             accent-color: #13634F; /* LamCheckboxRadio.RadioSelectionFill */
+             cursor: pointer;
+             width: 16px;
+             height: 16px;
+        }
+        
+        select:hover, input[type="text"]:hover {
+            border-color: var(--text-primary);
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            border-width: 2px;
+            padding: 0 7px; /* Adjust for border width change */
+        }
+
+        /* Buttons (Fluent Standard) */
+        .btn-toolbar { margin-bottom: 15px; display: flex; gap: 8px; }
+        
+        .btn {
+            border: none;
+            height: 36px; /* LamButton.Height: 36 */
+            padding: 0 20px;
+            min-width: 160px; /* LamButton.Width: 160 */
+            cursor: pointer;
+            font-size: 10px; /* L2Size */
+            border-radius: 60px; /* LamButton.Radius: 60 */
+            transition: all 0.1s;
+            font-weight: 700; /* LamTypography.FontWeight: Bold */
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+
+        .btn-primary { 
+            background-color: rgba(36, 36, 55, 1); 
+            color: white; 
+        }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        
+        .btn-default { 
+            background-color: white; 
+            color: var(--text-primary); 
+            border: 1px solid var(--border-color); 
+        }
+        .btn-default:hover { 
+            background-color: var(--neutral-light); 
+        }
+
+        .btn-danger { 
+            background-color: var(--lam-cancel-fill); 
+            color: var(--primary-color); 
+            border: 1px solid transparent; 
+        }
+        .btn-danger:hover { 
+            background-color: #d0d0d0; 
+        }
+
+        .icon { margin-right: 8px; font-style: normal; font-weight: normal; }
+
+        /* Grids & Lists - Modern Table */
+        .data-grid {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px; /* L3Size */
+            background: white;
+            box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.13), 0 0.3px 0.9px 0 rgba(0,0,0,0.11);
+            border-radius: 0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .data-grid th {
+            text-align: left;
+            padding: 10px 12px;
+            border-bottom: 1px solid #edebe9;
+            color: var(--text-primary);
+            font-weight: 600;
+            background-color: white;
+        }
+
+        .data-grid td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #edebe9;
+            color: var(--text-primary);
+        }
+
+        .data-grid tr:last-child td { border-bottom: none; }
+
+        .data-grid tr:hover td {
+            background-color: var(--neutral-light);
+        }
+
+        .clickable-row { cursor: pointer; }
+
+        /* Cards (Fluent Cards) */
+        .card-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .info-card {
+            border: 1px solid #edebe9;
+            padding: 16px;
+            background: white;
+            cursor: pointer;
+            border-radius: 2px;
+            border-top: 3px solid var(--primary-color); /* keeping the color accent */
+            box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.13), 0 0.3px 0.9px 0 rgba(0,0,0,0.11);
+            transition: box-shadow 0.2s;
+        }
+        .info-card:hover {
+            box-shadow: 0 6.4px 14.4px 0 rgba(0,0,0,0.13), 0 1.2px 3.6px 0 rgba(0,0,0,0.11);
+            background-color: #faf9f8;
+        }
+        .info-card h4 { margin: 0 0 8px 0; font-size: 16px; font-weight: 700; color: var(--text-primary); font-family: 'Georgia', serif; }
+        .info-card p { margin: 0; color: var(--text-secondary); font-size: 10px; font-family: 'Arial', sans-serif; }
+
+        /* Breadcrumbs */
+        .breadcrumb { margin-bottom: 24px; font-size: 10px; color: var(--text-secondary); font-weight: 400; font-family: 'Arial', sans-serif; }
+        .breadcrumb span { cursor: pointer; color: var(--primary-color); }
+        .breadcrumb span:hover { text-decoration: underline; }
+        .breadcrumb .current { color: var(--text-primary); cursor: default; text-decoration: none; font-weight: 600;}
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed; top:0; left:0; right:0; bottom:0;
+            background: rgba(0,0,0,0.4);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            backdrop-filter: blur(2px);
+        }
+        .modal-overlay.open { display: flex; animation: fadeInOverlay 0.2s; }
+        
+        @keyframes fadeInOverlay { from { opacity: 0; } to { opacity: 1; } }
+        
+        .modal {
+            background: white;
+            width: 440px;
+            padding: 24px;
+            box-shadow: 0 25.6px 57.6px 0 rgba(0,0,0,0.22), 0 4.8px 14.4px 0 rgba(0,0,0,0.18);
+            border-radius: 2px;
+        }
+        .modal-header { font-size: 16px; font-weight: 700; margin-bottom: 20px; color: var(--text-primary); font-family: 'Georgia', serif; }
+        .modal-footer { margin-top: 32px; display: flex; justify-content: flex-end; gap: 8px; }
+
+        /* Utility */
+        .badge-pill { 
+            background: #e1dfdd; padding: 4px 10px; border-radius: 12px; font-size: 10px; font-weight: 600; color: var(--text-secondary); font-family: 'Arial', sans-serif;
+        }
+
+        /* Permission Grid */
+        .permission-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 20px;
+            background: white;
+            padding: 20px;
+            border: 1px solid #edebe9;
+        }
+        .perm-column {
+            display: flex;
+            flex-direction: column;
+        }
+        .perm-header {
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: var(--text-primary);
+            font-family: 'Arial', sans-serif;
+        }
+        .perm-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #edebe9;
+            padding: 10px;
+            background: #fff;
+        }
+        .perm-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: var(--text-primary);
+            font-family: 'Arial', sans-serif;
+        }
+        .perm-item input {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="top-header">
+        <span>Lam Research Security Management App</span>
+    </div>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <div class="nav-sidebar">
+            <div class="nav-item active" onclick="switchNav('rls')" id="nav-rls">RLS Security Landing Page</div>
+            <div class="nav-item" onclick="switchNav('cls')" id="nav-cls">CLS Security Landing Page</div>
+        </div>
+
+        <!-- content -->
+        <div class="main-content">
+            
+            <!-- SCREEN 1: RLS LANDING PAGE -->
+            <div id="screen-rls-landing" class="screen active">
+                <h2>RLS Security Landing Page</h2>
+                <div style="background: #fafafa; padding: 20px; border: 1px solid #e1dfdd; margin-bottom: 20px;">
+                    <div class="form-group">
+                        <label class="form-label">Select Roles/Group</label>
+                        <select id="rls-group-select" onchange="loadRLSUsers()">
+                            <option value="">-- Select Group --</option>
+                            <option value="Superuser">Superuser</option>
+                            <option value="Viewer - IDEA & MPP (No Pricing/Margin)">Viewer - IDEA & MPP (No Pricing/Margin)</option>
+                            <option value="Viewer - IDEA & MPP with Pricing (No Margin)">Viewer - IDEA & MPP with Pricing (No Margin)</option>
+                            <option value="Viewer - IDEA with Cost and Tool Count">Viewer - IDEA with Cost and Tool Count</option>
+                            <option value="IDEA Editor (No Pricing/Margin)">IDEA Editor (No Pricing/Margin)</option>
+                            <option value="IDEA Editor - with Pricing (No Margin)">IDEA Editor - with Pricing (No Margin)</option>
+                            <option value="IDEA Editor - with Pricing & Margin No edit">IDEA Editor - with Pricing & Margin No edit</option>
+                            <option value="IDEA Editor - with Pricing & Margin Edit">IDEA Editor - with Pricing & Margin Edit</option>
+                            <option value="IDEA APP EDITOR access & MPP Access Editor. No Pricing">IDEA APP EDITOR access & MPP Access Editor. No Pricing</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="rls-user-list-container" style="display:none;">
+                    <h3>Group Members</h3>
+                    <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Select a user to manage their Row Level Security permissions.</p>
+                    <table class="data-grid">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Job Title</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rls-user-table-body">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SCREEN 2: USER RLS PERMISSION PAGE -->
+            <div id="screen-rls-permissions" class="screen">
+                <div class="breadcrumb">
+                    <span onclick="goBackToRLS()">RLS Security</span> > <span class="current" id="rls-perm-username">User Permissions</span>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>User RLS Permissions</h2>
+                    <div class="btn-toolbar">
+                        <button class="btn btn-primary" onclick="openAddPermModal()">
+                            <span class="icon">+</span> Add User Permission
+                        </button>
+                        <button class="btn btn-danger" id="btn-delete-perm" onclick="attemptDeletePerm()" disabled style="opacity: 0.5; cursor: not-allowed;">
+                            <span class="icon">🗑️</span> Delete User Permission
+                        </button>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 15px; padding: 10px; background: #eff6fc; border-left: 4px solid #0078d4;">
+                    <strong>Manage Access:</strong> Select specific Product Groups, BUs, Customers, or Market Segments to remove permissions.
+                </div>
+
+                <div class="permission-grid">
+                    <!-- Product Group Column -->
+                    <div class="perm-column">
+                        <div class="perm-header">Product Group</div>
+                        <div class="perm-list" id="list-pg">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Business Unit Column -->
+                    <div class="perm-column">
+                        <div class="perm-header">Business Unit</div>
+                        <div class="perm-list" id="list-bu">
+                             <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Customer Column -->
+                    <div class="perm-column">
+                        <div class="perm-header">Customer</div>
+                        <div class="perm-list" id="list-cust">
+                             <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Market Segment Column -->
+                    <div class="perm-column">
+                        <div class="perm-header">Market Segment</div>
+                        <div class="perm-list" id="list-ms">
+                             <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Customer Node Column -->
+                    <div class="perm-column">
+                        <div class="perm-header">Customer Node</div>
+                        <div class="perm-list" id="list-node">
+                             <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Advance/Legacy Column -->
+                    <div class="perm-column">
+                        <div class="perm-header">Advance/Legacy</div>
+                        <div class="perm-list" id="list-legacy">
+                             <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SCREEN 3: CLS LANDING PAGE -->
+            <div id="screen-cls-landing" class="screen">
+                <h2>CLS Security Landing Page</h2>
+                <p>Select Groups/Roles to manage Column Level Security</p>
+                
+                <div class="card-list">
+                    <div class="info-card" onclick="openCLSMembers('Superuser')">
+                        <h4>Superuser</h4>
+                        <p>2 Members</p>
+                    </div>
+                    <div class="info-card" onclick="openCLSMembers('Viewer - IDEA & MPP (No Pricing/Margin)')">
+                        <h4>Viewer - IDEA & MPP (No Pricing/Margin)</h4>
+                        <p>1 Member</p>
+                    </div>
+                    <div class="info-card" onclick="openCLSMembers('Viewer - IDEA & MPP with Pricing (No Margin)')">
+                        <h4>Viewer - IDEA & MPP with Pricing (No Margin)</h4>
+                        <p>1 Member</p>
+                    </div>
+                    <div class="info-card" onclick="openCLSMembers('Viewer - IDEA with Cost and Tool Count')">
+                        <h4>Viewer - IDEA with Cost and Tool Count</h4>
+                        <p>1 Member</p>
+                    </div>
+                    <div class="info-card" onclick="openCLSMembers('IDEA Editor (No Pricing/Margin)')">
+                        <h4>IDEA Editor (No Pricing/Margin)</h4>
+                        <p>1 Member</p>
+                    </div>
+                    <div class="info-card" onclick="openCLSMembers('IDEA Editor - with Pricing (No Margin)')">
+                        <h4>IDEA Editor - with Pricing (No Margin)</h4>
+                        <p>1 Member</p>
+                    </div>
+                    <div class="info-card" onclick="openCLSMembers('IDEA Editor - with Pricing & Margin No edit')">
+                        <h4>IDEA Editor - with Pricing & Margin No edit</h4>
+                        <p>1 Member</p>
+                    </div>
+                    <div class="info-card" onclick="openCLSMembers('IDEA Editor - with Pricing & Margin Edit')">
+                        <h4>IDEA Editor - with Pricing & Margin Edit</h4>
+                        <p>1 Member</p>
+                    </div>
+                    <div class="info-card" onclick="openCLSMembers('IDEA APP EDITOR access & MPP Access Editor. No Pricing')">
+                        <h4>IDEA APP EDITOR access & MPP Access Editor. No Pricing</h4>
+                        <p>1 Member</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SCREEN 4: CLS MEMBERS PAGE (User Members screen) -->
+            <div id="screen-cls-members" class="screen">
+                <div class="breadcrumb">
+                    <span onclick="goBackToCLS()">CLS Security Groups</span> > <span class="current" id="cls-group-name">Group Members</span>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>User Members</h2>
+                    <button class="btn btn-primary" onclick="openAddMemberModal()">
+                        <span class="icon">+</span> Add New User
+                    </button>
+                </div>
+
+                <table class="data-grid">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th style="width: 60px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cls-members-table">
+                        <tr>
+                            <td>Alice Johnson</td>
+                            <td>alice.j@contoso.com</td>
+                            <td>Manager</td>
+                            <td style="text-align: center;"><span style="cursor: pointer; color: #a80000;" onclick="removeMember(this)">🗑️</span></td>
+                        </tr>
+                        <tr>
+                            <td>Bob Smith</td>
+                            <td>bob.s@contoso.com</td>
+                            <td>Analyst</td>
+                            <td style="text-align: center;"><span style="cursor: pointer; color: #a80000;" onclick="removeMember(this)">🗑️</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL: ADD RLS PERMISSION -->
+    <div id="modal-add-perm" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">Add User Permission</div>
+            <div class="form-group">
+                <label class="form-label">Product Group</label>
+                <select id="add-pg" onchange="updateBusinessUnits()">
+                    <option value="">-- Select Product Group --</option>
+                    <option value="DEP">DEP</option>
+                    <option value="NON SAM">NON SAM</option>
+                    <option value="ETCH">ETCH</option>
+                    <option value="OCTO">OCTO</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Business Unit</label>
+                <select id="add-bu">
+                    <option value="">-- Select Business Unit --</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Customer</label>
+                <select id="add-cust" onchange="updateMarketSegments()">
+                    <option value="">-- Select Customer --</option>
+                    <option value="UMC">UMC</option>
+                    <option value="Samsung">Samsung</option>
+                    <option value="Micron">Micron</option>
+                    <option value="Kioxia">Kioxia</option>
+                    <option value="SK hynix">SK hynix</option>
+                    <option value="SMIC">SMIC</option>
+                    <option value="Intel">Intel</option>
+                    <option value="TSMC">TSMC</option>
+                    <option value="Nanya">Nanya</option>
+                    <option value="Taiwan Regional">Taiwan Regional</option>
+                    <option value="GENERIC 200MM">GENERIC 200MM</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Market Segment</label>
+                <select id="add-ms" onchange="updateCustomerNodes()">
+                    <option value="">-- Select Market Segment --</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Customer Node</label>
+                <select id="add-node" onchange="updateLegacy()">
+                    <option value="">-- Select Customer Node --</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Advance/Legacy</label>
+                <select id="add-legacy">
+                    <option value="">-- Select Advance/Legacy --</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" onclick="closeModal('modal-add-perm')">Cancel</button>
+                <button class="btn btn-primary" onclick="submitAddPerm()">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: DELETE RLS PERMISSION -->
+    <div id="modal-del-perm" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">Delete Permission</div>
+            <p>Are you sure you want to delete these selected permissions?</p>
+            <div id="del-perm-details" style="font-size: 13px; color: #333; background: #f3f2f1; padding: 10px; margin-bottom: 10px; border-left: 3px solid #a4262c;">
+                <!-- Details injected by JS -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" onclick="closeModal('modal-del-perm')">Cancel</button>
+                <button class="btn btn-danger" onclick="confirmDeletePerm()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD NEW USER (CLS) -->
+    <div id="modal-add-user" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">Add User to Group</div>
+            <div class="form-group">
+                <label class="form-label">Select User to Add</label>
+                <select id="add-user-select">
+                    <option>Ajay Raj (Ajay.Raj@lamresearch.com)</option>
+                    <option>Raghu Balasubramanian (Raghu.Balasubramanian@lamresearch.com)</option>
+                    <option>Vikash Kumar (Vikash.Kumar@lamresearch.com)</option>
+                    <option>Mohammad Masood (MohammadMasood.Mohammadi@lamresearch.com)</option>
+                    <option>Narendra Balamuri (Narendra.Balamuri@lamresearch.com)</option>
+                    <option>Krishnambhal Gopal Krishnan Ayar (Krishnambhal.GopalakrishnanAyar@lamresearch.com)</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" onclick="closeModal('modal-add-user')">Cancel</button>
+                <button class="btn btn-primary" onclick="submitAddUser()">ADD</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Navigation Logic ---
+        function switchNav(area) {
+            // Update Sidebar UI
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById('nav-' + area).classList.add('active');
+
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+
+            // Show default screen for area
+            if (area === 'rls') {
+                document.getElementById('screen-rls-landing').classList.add('active');
+            } else {
+                document.getElementById('screen-cls-landing').classList.add('active');
+            }
+        }
+
+        // --- RLS Logic ---
+        const rlsUserData = {
+            'Superuser': [
+                { name: 'Ajay Raj', email: 'Ajay.Raj@lamresearch.com', role: 'Member' },
+                { name: 'Raghu Balasubramanian', email: 'Raghu.Balasubramanian@lamresearch.com', role: 'Member' }
+            ],
+            'Viewer - IDEA & MPP (No Pricing/Margin)': [
+                { name: 'Vikash Kumar', email: 'Vikash.Kumar@lamresearch.com', role: 'Member' }
+            ],
+            'Viewer - IDEA & MPP with Pricing (No Margin)': [
+                { name: 'Vikash Kumar', email: 'Vikash.Kumar@lamresearch.com', role: 'Member' }
+            ],
+            'Viewer - IDEA with Cost and Tool Count': [
+                 { name: 'Mohammad Masood', email: 'MohammadMasood.Mohammadi@lamresearch.com', role: 'Member' }
+            ],
+            'IDEA Editor (No Pricing/Margin)': [
+                 { name: 'Mohammad Masood', email: 'MohammadMasood.Mohammadi@lamresearch.com', role: 'Member' }
+            ],
+            'IDEA Editor - with Pricing (No Margin)': [
+                 { name: 'Narendra Balamuri', email: 'Narendra.Balamuri@lamresearch.com', role: 'Member' }
+            ],
+            'IDEA Editor - with Pricing & Margin No edit': [
+                 { name: 'Krishnambhal Gopal Krishnan Ayar', email: 'Krishnambhal.GopalakrishnanAyar@lamresearch.com', role: 'Member' }
+            ],
+            'IDEA Editor - with Pricing & Margin Edit': [
+                 { name: 'Krishnambhal Gopal Krishnan Ayar', email: 'Krishnambhal.GopalakrishnanAyar@lamresearch.com', role: 'Member' }
+            ],
+            'IDEA APP EDITOR access & MPP Access Editor. No Pricing': [
+                 { name: 'Narendra Balamuri', email: 'Narendra.Balamuri@lamresearch.com', role: 'Member' }
+            ]
+        };
+
+        function loadRLSUsers() {
+            const groupSelect = document.getElementById('rls-group-select');
+            const group = groupSelect.value;
+            const container = document.getElementById('rls-user-list-container');
+            const tbody = document.getElementById('rls-user-table-body');
+
+            tbody.innerHTML = '';
+
+            if (group && rlsUserData[group]) {
+                container.style.display = 'block';
+                rlsUserData[group].forEach(user => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'clickable-row';
+                    tr.onclick = function() { openRLSPermissions(user.name); };
+                    tr.innerHTML = `
+                        <td>${user.name}</td>
+                        <td>${user.email}</td>
+                        <td>${user.role}</td>
+                        <td><span class="badge-pill">Active</span></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } else {
+                container.style.display = 'none';
+            }
+        }
+
+        function openRLSPermissions(userName) {
+            document.getElementById('screen-rls-landing').classList.remove('active');
+            document.getElementById('screen-rls-permissions').classList.add('active');
+            document.getElementById('rls-perm-username').innerText = userName;
+            renderPermissionColumns();
+        }
+
+        function goBackToRLS() {
+            document.getElementById('screen-rls-permissions').classList.remove('active');
+            document.getElementById('screen-rls-landing').classList.add('active');
+        }
+
+        // --- RLS Independent Permission Logic ---
+        const rlsPermissionsData = {
+            pg: ['csbg', 'DEP', 'ETCH', 'NON SAM', 'OCTO'],
+            bu: ['BU', 'AETHER', 'ALD', 'BONDING', 'CLEAN', 'CLEAN_test', 'CMP', 'CONDUCTOR'],
+            cust: ['CEA LETI - (Corporate)', 'Changxin Jidian Memory Tech', 'Customer', 'CXMT', 'Europe Central', 'Europe North/South', 'Europe Regional', 'GENERIC 200MM', 'GENA'],
+            ms: ['DRAM', 'FOUNDRY', 'Krishna', 'MEMORY', 'MPU', 'NAND', 'OTH MEM', 'PACKAGING', 'PACKAGING DRAM'],
+            node: ['7NM', '>16', 'D0B 6F2', '110S', 'BICS3', '32L', '10NM', '200S', '90', 'N2', '130S', '90S', 'L28', 'D25NM', '160S', '45NM', 'T1Y', 'PROJECT', 'S128', 'S7XX', 'T1D', 'A8', '16NM'],
+            legacy: ['ADV', 'LEGACY']
+        };
+
+        function renderPermissionColumns() {
+            renderColumn('list-pg', rlsPermissionsData.pg, 'pg');
+            renderColumn('list-bu', rlsPermissionsData.bu, 'bu');
+            renderColumn('list-cust', rlsPermissionsData.cust, 'cust');
+            renderColumn('list-ms', rlsPermissionsData.ms, 'ms');
+            renderColumn('list-node', rlsPermissionsData.node, 'node');
+            renderColumn('list-legacy', rlsPermissionsData.legacy, 'legacy');
+            updateDeleteButtonState();
+        }
+
+        function renderColumn(containerId, data, category) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            data.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'perm-item';
+                div.innerHTML = `<input type="checkbox" data-cat="${category}" data-val="${item}" onchange="updateDeleteButtonState()"> ${item}`;
+                container.appendChild(div);
+            });
+        }
+
+        function updateDeleteButtonState() {
+            const allChecked = document.querySelectorAll('.perm-item input:checked');
+            const btn = document.getElementById('btn-delete-perm');
+            
+            if (btn) {
+                if (allChecked.length > 0) {
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                    btn.style.cursor = 'pointer';
+                } else {
+                    btn.disabled = true;
+                    btn.style.opacity = '0.5';
+                    btn.style.cursor = 'not-allowed';
+                }
+            }
+        }
+
+        function attemptDeletePerm() {
+            const allChecked = document.querySelectorAll('.perm-item input:checked');
+            if (allChecked.length === 0) return;
+
+            // Gather selections
+            const cats = { pg: [], bu: [], cust: [], ms: [], node: [], legacy: [] };
+            allChecked.forEach(cb => {
+                const cat = cb.getAttribute('data-cat');
+                const val = cb.getAttribute('data-val');
+                if(cats[cat]) cats[cat].push(val);
+            });
+
+            // Build message
+            let msg = '';
+            if (cats.pg.length) msg += `<strong>Product Group:</strong> ${cats.pg.join(', ')}<br>`;
+            if (cats.bu.length) msg += `<strong>Business Unit:</strong> ${cats.bu.join(', ')}<br>`;
+            if (cats.cust.length) msg += `<strong>Customer:</strong> ${cats.cust.join(', ')}<br>`;
+            if (cats.ms.length) msg += `<strong>Market Segment:</strong> ${cats.ms.join(', ')}<br>`;
+            if (cats.node.length) msg += `<strong>Customer Node:</strong> ${cats.node.join(', ')}<br>`;
+            if (cats.legacy.length) msg += `<strong>Advance/Legacy:</strong> ${cats.legacy.join(', ')}<br>`;
+
+            document.getElementById('del-perm-details').innerHTML = msg;
+            document.getElementById('modal-del-perm').classList.add('open');
+        }
+
+        function confirmDeletePerm() {
+            // Uncheck the boxes to simulate deletion
+            document.querySelectorAll('.perm-item input:checked').forEach(cb => cb.checked = false);
+            updateDeleteButtonState();
+            closeModal('modal-del-perm');
+            alert('Selected permissions have been removed.');
+        }
+
+        function openAddPermModal() {
+            document.getElementById('modal-add-perm').classList.add('open');
+            // Reset Dropdowns
+            document.getElementById('add-pg').value = "";
+            updateBusinessUnits(); 
+            document.getElementById('add-cust').value = "";
+            updateMarketSegments(); 
+            // Note: Market Segment update triggers downstream clear, so Node and Legacy will reset automatically
+        }
+
+        const businessUnitData = {
+            "DEP": ["PVD", "PECVD", "CLEAN", "DM", "SELECTIVE", "AETHER"],
+            "NON SAM": ["BONDING", "CMP"],
+            "ETCH": ["DIELECTRIC", "SIG", "SELECTIVE", "STRIP", "CONDUCTOR"],
+            "OCTO": ["AETHER"]
+        };
+
+
+        function updateBusinessUnits() {
+            const pgSelect = document.getElementById('add-pg');
+            const buSelect = document.getElementById('add-bu');
+            const selectedPG = pgSelect.value;
+            
+            buSelect.innerHTML = '<option value="">-- Select Business Unit --</option>';
+
+            if (selectedPG && businessUnitData[selectedPG]) {
+                const units = [...new Set(businessUnitData[selectedPG])];
+                units.sort();
+                units.forEach(unit => {
+                    const option = document.createElement('option');
+                    option.value = unit;
+                    option.text = unit;
+                    buSelect.appendChild(option);
+                });
+            }
+        }
+
+        // Expanded Data Hierarchy from Screenshot
+        // Fields: Customer -> Market Segment -> Customer Node -> Advance/Legacy
+        const marketData = [
+            { c: "UMC", m: "FOUNDRY", n: "7NM", l: "ADV" },
+            { c: "Samsung", m: "NAND", n: ">16", l: "LEGACY" },
+            { c: "Samsung", m: "DRAM", n: "D0B 6F2", l: "ADV" },
+            { c: "Micron", m: "DRAM", n: "110S", l: "LEGACY" },
+            { c: "Kioxia", m: "NAND", n: "BICS3", l: "LEGACY" },
+            { c: "SK hynix", m: "NAND", n: "32L", l: "LEGACY" },
+            { c: "SMIC", m: "FOUNDRY", n: "10NM", l: "ADV" },
+            { c: "Micron", m: "DRAM", n: "200S", l: "ADV" },
+            { c: "Intel", m: "NAND", n: "90", l: "LEGACY" },
+            { c: "TSMC", m: "FOUNDRY", n: "N2", l: "ADV" },
+            { c: "Nanya", m: "DRAM", n: "130S", l: "ADV" },
+            { c: "Micron", m: "NAND", n: "90S", l: "LEGACY" },
+            { c: "Taiwan Regional", m: "FOUNDRY", n: "L28", l: "NULL" },
+            { c: "SK hynix", m: "DRAM", n: "D25NM", l: "LEGACY" },
+            { c: "Nanya", m: "DRAM", n: "160S", l: "ADV" },
+            { c: "Micron", m: "NAND", n: "110S", l: "LEGACY" },
+            { c: "Samsung", m: "FOUNDRY", n: "45NM", l: "LEGACY" },
+            { c: "SK hynix", m: "DRAM", n: "T1Y", l: "LEGACY" },
+            { c: "GENERIC 200MM", m: "DRAM", n: "PROJECT", l: "NOT APPLICABLE" },
+            { c: "SK hynix", m: "NAND", n: "S128", l: "LEGACY" },
+            { c: "UMC", m: "FOUNDRY", n: "10NM", l: "ADV" },
+            { c: "SK hynix", m: "NAND", n: "S7XX", l: "ADV" },
+            { c: "SK hynix", m: "DRAM", n: "T1D", l: "ADV" },
+            { c: "TSMC", m: "FOUNDRY", n: "A8", l: "ADV" },
+            { c: "Kioxia", m: "NAND", n: "16NM", l: "LEGACY" }
+        ];
+
+        // Level 1: Customer -> Updates Market Segment
+        function updateMarketSegments() {
+            const custSelect = document.getElementById('add-cust');
+            const msSelect = document.getElementById('add-ms');
+            const nodeSelect = document.getElementById('add-node');
+            const legacySelect = document.getElementById('add-legacy');
+            
+            const selectedCust = custSelect.value;
+
+            // Clear downstream
+            msSelect.innerHTML = '<option value="">-- Select Market Segment --</option>';
+            nodeSelect.innerHTML = '<option value="">-- Select Customer Node --</option>';
+            legacySelect.innerHTML = '<option value="">-- Select Advance/Legacy --</option>';
+
+            if (selectedCust) {
+                // Filter data for this customer
+                const segments = [...new Set(marketData.filter(d => d.c === selectedCust).map(d => d.m))];
+                segments.sort();
+                segments.forEach(seg => {
+                    const option = document.createElement('option');
+                    option.value = seg;
+                    option.text = seg;
+                    msSelect.appendChild(option);
+                });
+            }
+        }
+
+        // Level 2: Customer + Market Segment -> Updates Customer Node
+        function updateCustomerNodes() {
+            const custSelect = document.getElementById('add-cust');
+            const msSelect = document.getElementById('add-ms');
+            const nodeSelect = document.getElementById('add-node');
+            const legacySelect = document.getElementById('add-legacy');
+
+            const selectedCust = custSelect.value;
+            const selectedMS = msSelect.value;
+
+            nodeSelect.innerHTML = '<option value="">-- Select Customer Node --</option>';
+            legacySelect.innerHTML = '<option value="">-- Select Advance/Legacy --</option>';
+
+            if (selectedCust && selectedMS) {
+                const nodes = [...new Set(marketData.filter(d => d.c === selectedCust && d.m === selectedMS).map(d => d.n))];
+                nodes.sort();
+                nodes.forEach(n => {
+                    const option = document.createElement('option');
+                    option.value = n;
+                    option.text = n;
+                    nodeSelect.appendChild(option);
+                });
+            }
+        }
+
+        // Level 3: Customer + MS + Node -> Updates Legacy
+        function updateLegacy() {
+            const custSelect = document.getElementById('add-cust');
+            const msSelect = document.getElementById('add-ms');
+            const nodeSelect = document.getElementById('add-node');
+            const legacySelect = document.getElementById('add-legacy');
+
+            const selectedCust = custSelect.value;
+            const selectedMS = msSelect.value;
+            const selectedNode = nodeSelect.value;
+
+            legacySelect.innerHTML = '<option value="">-- Select Advance/Legacy --</option>';
+
+            if (selectedCust && selectedMS && selectedNode) {
+                 const legacies = [...new Set(marketData.filter(d => d.c === selectedCust && d.m === selectedMS && d.n === selectedNode).map(d => d.l))];
+                 legacies.sort();
+                 legacies.forEach(l => {
+                    if (l === 'NULL' || l === 'NOT APPLICABLE') return;
+                    const option = document.createElement('option');
+                    option.value = l;
+                    option.text = l;
+                    legacySelect.appendChild(option);
+                });
+            }
+        }
+
+        function submitAddPerm() {
+            // Get values from dropdowns
+            const pg = document.getElementById('add-pg').value;
+            const bu = document.getElementById('add-bu').value;
+            const cust = document.getElementById('add-cust').value;
+            const ms = document.getElementById('add-ms').value;
+            const node = document.getElementById('add-node').value;
+            const legacy = document.getElementById('add-legacy').value;
+
+            let addedCount = 0;
+
+            // Helper to add unique items
+            const addItem = (list, item) => {
+                if (item && !list.includes(item)) {
+                    list.push(item);
+                    return 1;
+                }
+                return 0;
+            };
+
+            // Update the data model
+            addedCount += addItem(rlsPermissionsData.pg, pg);
+            addedCount += addItem(rlsPermissionsData.bu, bu);
+            addedCount += addItem(rlsPermissionsData.cust, cust);
+            addedCount += addItem(rlsPermissionsData.ms, ms);
+            addedCount += addItem(rlsPermissionsData.node, node);
+            addedCount += addItem(rlsPermissionsData.legacy, legacy);
+
+            // Refresh the grid UI
+            renderPermissionColumns();
+
+            closeModal('modal-add-perm');
+            
+            if (addedCount > 0) {
+                alert('Permissions added successfully.');
+            } else {
+                alert('No new permissions selected or permission already exists.');
+            }
+        }
+
+
+        // --- CLS Logic ---
+        function openCLSMembers(groupName) {
+            document.getElementById('screen-cls-landing').classList.remove('active');
+            document.getElementById('screen-cls-members').classList.add('active');
+            document.getElementById('cls-group-name').innerText = groupName;
+
+            // Populate CLS Members Table from rlsUserData (using same data source)
+            const tbody = document.getElementById('cls-members-table');
+            tbody.innerHTML = ''; // Clear existing static rows
+
+            if (rlsUserData[groupName]) {
+                rlsUserData[groupName].forEach(user => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${user.name}</td>
+                        <td>${user.email}</td>
+                        <td>${user.role}</td>
+                        <td style="text-align: center;"><span style="cursor: pointer; color: #a80000;" onclick="removeMember(this)">🗑️</span></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } else {
+                 // Fallback or empty message
+                 const tr = document.createElement('tr');
+                 tr.innerHTML = `<td colspan="4" style="text-align:center; color:#666;">No members found for this group.</td>`;
+                 tbody.appendChild(tr);
+            }
+        }
+
+        function goBackToCLS() {
+            document.getElementById('screen-cls-members').classList.remove('active');
+            document.getElementById('screen-cls-landing').classList.add('active');
+        }
+
+        function openAddMemberModal() {
+            document.getElementById('modal-add-user').classList.add('open');
+        }
+
+        function submitAddUser() {
+            const userStr = document.getElementById('add-user-select').value;
+            const name = userStr.split(' (')[0];
+            const email = userStr.split(' (')[1].replace(')', '');
+            
+            const tbody = document.getElementById('cls-members-table');
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${name}</td>
+                <td>${email}</td>
+                <td>Member</td>
+                <td style="text-align: center;"><span style="cursor: pointer; color: #a80000;" onclick="removeMember(this)">🗑️</span></td>
+            `;
+            tbody.appendChild(tr);
+            closeModal('modal-add-user');
+        }
+
+        function removeMember(el) {
+            if(confirm('Remove this user from the group?')) {
+                el.closest('tr').remove();
+            }
+        }
+
+        // --- Common ---
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('open');
+        }
+
+    </script>
+</body>
+</html>
